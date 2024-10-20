@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+<div class="">
+    <h5 class="text-center">List Of Users</h5>
+    <table class="table nowrap" style="width: 100%" id="trans-table"></table>
+</div>
+@section css {
+
+    <link href="~/css/datatables.min.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="~/js/datatables.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var table,
+            search_repayment_history = function () {
+                try {
+                    table = $('#trans-table').DataTable({
+                        'processing': true,
+                        'serverSide': true,
+                        "ajax": {
+                            'url': '/Home/GetUserList',
+                            "method": "POST",
+                            "data": function (d) {
+                
+                            }
+
+                        },
+                        "columns": [
+                            { width: '25px', searchable: false, orderable: false, title: 'S/N' },
+                            { "data": "Names", title: "User Names"},
+                            { "data": "Scores", title: "Scores" },
+                            { "data": "Courses", title: "Courses Attempted" },
+                            { "data": "Categories", title: "Course Categories" },
+                        ],
+                        "columnDefs": [
+                            
+                        ],
+                        "language": {
+                            "emptyTable": "There are no requests at present.",
+                            "zeroRecords": "There were no matching requests found."
+                        },
+                        "searching": false,
+                        "ordering": false,
+                        "paging": true,
+                        "pageLength": 50,
+                        'dom': 'Bfrtip',
+                        "Filter": false,
+                        "initComplete": function () {
+
+                        },
+                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                            var oSettings = this.fnSettings();
+                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                            return nRow;
+                        },
+                        // responsive: {
+                        //     details: {
+                        //         type: 'column',
+                        //     }
+                        // },
+                    });
+                }
+                catch (ex) {
+                    alert('Error Occured');
+                    console.log(ex);
+                }
+            },
+            search_history = function () {
+                if (typeof table !== "undefined") {
+                    $('#trans-table').DataTable().ajax.reload();
+
+                }
+                else {
+                    search_repayment_history();
+                }
+            };
+        $(document).ready(function () {
+
+            search_history();
+        
+        });
+
+    </script>
+}

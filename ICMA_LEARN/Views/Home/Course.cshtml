@@ -1,0 +1,151 @@
+﻿@model ICMA_LEARN.ViewModel.CourseViewModel
+@{
+    ViewData["Title"] = "Create Courses";
+}
+@section css {
+
+    <style type="text/css">
+        .button {
+            margin-top: 10px;
+            justify-content: flex-end;
+            align-items: baseline;
+        }
+
+    </style>
+}
+@section scripts {
+
+    <script type="text/javascript">
+        var _ShowWait = function () {
+            $('#waitModal1').attr('style', '');
+        },
+            _HideWait = function () {
+                $('#waitModal1').attr('style', 'display:none;');
+            };
+
+        $(document).ready(function () {
+
+            var _form = $("#form1"), _btn = $("#submitBtn");
+            _form.submit(function (e) {
+                e.preventDefault();
+                _ShowWait();
+                try {
+                    let goUpload = true;
+                    var files1 = $("#imageUploadForm")[0].files[0];
+                    if (files1 != null && files1.length > 0) {
+                        var uploadFile1 = files1[0];
+                        if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test(uploadFile1.name)) {
+                            alert("You must select an image file only");
+                            _HideWait();
+                            goUpload = false;
+                            return false;
+                        }
+                        if (uploadFile1.size > 1000000) { // 1mb
+                            alert("Please upload a smaller image, max size is 1 MB");
+                            _HideWait();
+                            goUpload = false;
+                            return false;
+                        }
+                    }
+                    if (goUpload) {
+                        var formData = new FormData();
+                        let _courseName = $("#CourseName").val();
+                        let _catId = $("#CategoryID").val();
+                        let _price = $("#Price").val();
+                        formData.append("imageUploadForm", files1);
+                        formData.append("CourseName", _courseName);
+                        formData.append("CategoryID", _catId);
+                        formData.append("Price", _price);
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/CreateCourse",
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            async: true,
+                            success: function (response) {
+                                if (response != null && response.successful) {
+                                    alert('Entries successfully submitted');
+                                    location.reload(false);
+                                }
+                                else {
+                                    alert(response.errors[0].error);
+                                }
+                                _HideWait();
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(errorThrown);
+                                _HideWait();
+                            }
+                        });
+                    }
+
+                }
+                catch (ex) {
+                    console.log(ex);
+                    alert('Error Occurred');
+                    _HideWait();
+                }
+            });
+        });
+    </script>
+}
+<div class="">
+    <div id="waitModal1" style="display:none !important;">
+        <p style="text-align:center;">
+            <img src="~/images/image003.gif" alt="" />
+            <label class="content" id="ProgressLabel" font-bold="true">Creating Course...Please wait</label>
+        </p>
+    </div>
+    @if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <form class="" id="form1">
+            @* enctype="multipart/form-data" *@
+            <h4>Create Course</h4>
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Course Name</label>
+                        <input type="text" placeholder="" id="CourseName" name="CourseName" class="form-control" required="required" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Categories</label>
+                        <select class="form-control" id="CategoryID" name="CategoryID" required="required">
+                            @if (Model.CourseItems != null && Model.CourseItems.Count() > 0)
+                            {
+                                <option value="">Select...</option>
+                                foreach (var _item in Model.CourseItems)
+                                {
+                                    <option value="@_item.CategoryId">@_item.CategoryDescription</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Price</label>
+                        <input type="number" placeholder="" id="Price" name="Price" class="form-control" required="required" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">upload file</label>
+                        <input type="file" id="imageUploadForm" name="image" data-parsley-filemaxmegabytes="5" data-parsley-fileextension="xls,xlsx" data-parsley-upload-file="abc" required="required" />
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-action">
+                <button class="button btn-success" id="submitBtn" type="submit">Submit</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="">
+            <span class="text-danger-">Error occurred,please contact the administrator.</span>
+        </div>
+    }
+</div>
