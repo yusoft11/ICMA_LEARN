@@ -92,7 +92,7 @@ namespace ICMA_LEARN.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetUserList(SearchRequest request)
+        public IActionResult GetUserList(UserSearchRequest request)
         {
             UserListSearchResponse response = new UserListSearchResponse();
             try

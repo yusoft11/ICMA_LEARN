@@ -2,8 +2,8 @@
     ViewData["Title"] = "Users";
 }
 <div class="">
-    <h5 class="text-center">List Of Users</h5>
-    <table class="table nowrap" style="width: 100%" id="trans-table"></table>
+    <h5 class="text-center">Scores For Attempted Courses</h5>
+    <table class="table table-striped table-condensed nowrap" style="width: 100%" id="trans-table"></table>
 </div>
 @section css {
 
@@ -28,11 +28,10 @@
 
                         },
                         "columns": [
-                            { width: '25px', searchable: false, orderable: false, title: 'S/N' },
-                            { "data": "Names", title: "User Names"},
-                            { "data": "Scores", title: "Scores" },
-                            { "data": "Courses", title: "Courses Attempted" },
-                            { "data": "Categories", title: "Course Categories" },
+                            { "data": "names", title: "User Names"},
+                            { "data": "scores", title: "Scores" },
+                            { "data": "courses", title: "Courses Attempted" },
+                            { "data": "categories", title: "Course Categories" }
                         ],
                         "columnDefs": [
                             
@@ -41,7 +40,7 @@
                             "emptyTable": "There are no requests at present.",
                             "zeroRecords": "There were no matching requests found."
                         },
-                        "searching": false,
+                        "searching": true,
                         "ordering": false,
                         "paging": true,
                         "pageLength": 50,
@@ -49,17 +48,7 @@
                         "Filter": false,
                         "initComplete": function () {
 
-                        },
-                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                            var oSettings = this.fnSettings();
-                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
-                            return nRow;
-                        },
-                        // responsive: {
-                        //     details: {
-                        //         type: 'column',
-                        //     }
-                        // },
+                        }
                     });
                 }
                 catch (ex) {

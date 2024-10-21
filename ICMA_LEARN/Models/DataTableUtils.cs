@@ -1,13 +1,17 @@
-﻿namespace ICMA_LEARN.Models
+﻿using ICMA_LEARN.Models;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ICMA_LEARN.Models
 {
     public class SearchRequest
     {
         public int Draw { get; set; }
         public int Start { get; set; }
         public int Length { get; set; }
-        public ColumnRequestItem[]? Columns { get; set; }
-        public OrderRequestItem[]? Order { get; set; }
-        public SearchRequestItem? Search { get; set; }
+        public ColumnRequestItem[] Columns { get; set; }
+        public OrderRequestItem[] Order { get; set; }
+        public SearchRequestItem Search { get; set; }
     }
     public abstract class SearchDetail
     {
@@ -15,20 +19,20 @@
     }
     public class ColumnRequestItem
     {
-        public string? Data { get; set; }
-        public string? Name { get; set; }
+        public string Data { get; set; }
+        public string Name { get; set; }
         public bool Searchable { get; set; }
         public bool Orderable { get; set; }
-        public SearchRequestItem? Search { get; set; }
+        public SearchRequestItem Search { get; set; }
     }
     public class OrderRequestItem
     {
         public int Column { get; set; }
-        public string? Dir { get; set; }
+        public string Dir { get; set; }
     }
     public class SearchRequestItem
     {
-        public string? Value { get; set; }
+        public string Value { get; set; }
         public bool Regex { get; set; }
     }
     public abstract class SearchResponse<T> where T : SearchDetail
@@ -109,13 +113,9 @@
                 var predicate = PredicateBuilder.False<TDetail>();
                 foreach (var column in searchColums)
                 {
-                    //var columnName = column.Data.AsPropertyName();
-                    var columnName = column.Data;
+                    var columnName = column.Data.AsPropertyName();
                     var prop = typeof(TDetail).GetProperty(columnName);
-                    if (prop != null)
-                    {
-                        predicate = predicate.Or(x => (prop.GetValue(x) ?? "").ToString().ContainsIgnoringCase(request.Search.Value));
-                    }
+                    predicate = predicate.Or(x => (prop.GetValue(x) ?? "").ToString().ContainsIgnoringCase(request.Search.Value));
                 }
                 searchResults = results.Where(predicate);
             }

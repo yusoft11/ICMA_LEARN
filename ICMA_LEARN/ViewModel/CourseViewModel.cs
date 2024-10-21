@@ -1,4 +1,6 @@
-﻿namespace ICMA_LEARN.ViewModel
+﻿using ICMA_LEARN.Models;
+
+namespace ICMA_LEARN.ViewModel
 {
     public class CourseViewModel
     {
@@ -16,5 +18,9 @@
         public long CategoryID { get; set; }
         public string? CourseName { get; set; }
         public int Price { get; set; }
+    }
+    public class UserSearchRequest : SearchRequest
+    {
+
     }
 }
