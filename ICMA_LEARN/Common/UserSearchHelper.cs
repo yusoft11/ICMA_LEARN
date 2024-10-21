@@ -36,9 +36,8 @@ namespace ICMA_LEARN.Common
         {
             List<UserListSearchDetail> Inst = new List<UserListSearchDetail>();
 
-            string sql = "select d.UserID, sum(d.Score) [Scores], a.FullName [Names], b.CourseDescription [Courses], c.CategoryDescription [Categories] from Users a," +
-                "Courses b, Categories c, QuizScores d where d.UserID = a.UserID and d.CourseID = b.CourseID and b.CategoryID = c.CategoryID group by a.FullName, " +
-                "d.UserID, b.CourseDescription, c.CategoryDescription order by [Scores] desc";
+            string sql = "select d.UserID, d.Score [Scores], a.FullName [Names], b.CourseDescription [Courses], c.CategoryDescription [Categories] from Users a," +
+                "Courses b, Categories c, QuizScores d where d.UserID = a.UserID and d.CourseID = b.CourseID and b.CategoryID = c.CategoryID order by [Scores] desc";
             Inst = _context.UserListDetails.FromSqlRaw<UserListSearchDetail>(sql).ToList();
             return Inst;
         }
